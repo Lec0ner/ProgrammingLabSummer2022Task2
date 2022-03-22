@@ -1,7 +1,7 @@
-package tar;
+package split;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ArchivatorTest {
+class SplitTest {
 
 }
