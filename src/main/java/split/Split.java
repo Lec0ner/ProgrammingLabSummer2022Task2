@@ -31,7 +31,7 @@ public class Split {
         this.inputFileName = inputFileName;
         correctFileName(outputNameFile);
         createFileFromLine(20);
-        //createFileFromSymbol(0);
+        createFileFromSymbol(2000);
     }
 
     //Задает базовое имя выходного файла, базовое имя X,если параметри "-" выходной файл = входному
@@ -70,8 +70,9 @@ public class Split {
                 FileWriter writer = new FileWriter(file);
                 for (int j = 0; j < countLines; j++) {
                     line = reader.readLine();
-                    writer.write(line);
+                    writer.write(line + "\n");
                 }
+                writer.close();
             }
             reader.close();
         } catch (IOException e) {
@@ -91,12 +92,13 @@ public class Split {
             reader.close();
             reader = new BufferedReader(new FileReader(inputFileName));
             for (int i = 0; i < Math.ceil((double) counter / countSymbols); i++) {
-                File file = new File("Aboba.txt");
+                File file = new File("Aboba1.txt");
                 FileWriter writer = new FileWriter(file);
                 for (int j = 0; j < countSymbols; j++) {
                     symbol = (char) reader.read();
                     writer.write(symbol);
                 }
+                writer.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
