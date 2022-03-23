@@ -10,8 +10,8 @@ package split;
 ● Регулярка ([^\\]+)\.txt
  */
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.nio.file.Path;
 
 public class Split {
 
@@ -30,28 +30,79 @@ public class Split {
         this.countFiles = countFiles;
         this.inputFileName = inputFileName;
         correctFileName(outputNameFile);
+        createFileFromLine(20);
+        //createFileFromSymbol(0);
     }
 
     //Задает базовое имя выходного файла, базовое имя X,если параметри "-" выходной файл = входному
 
     private void correctFileName(String outputNameFile) {
         if (outputNameFile.equals("-")) {
-            Matcher matcher = Pattern.compile("([^\\\\]+)\\.txt").matcher(inputFileName);
-            matcher.find();
-            outputNameFile = matcher.group(1);
+            String fileName = String.valueOf(Path.of(inputFileName).getFileName());
+            outputNameFile = fileName.substring(0, fileName.lastIndexOf("."));
         }
         this.outputNameFile = outputNameFile;
     }
 
-    public void orderFileName(Split outputNameFile){
-        if (fileNumbering){
 
-        }else{
+    public String orderFileName(String outputNameFile) {
+        if (fileNumbering) {
+
+        } else {
 
         }
-
+        return "";
     }
 
+    public void createFileFromLine(int countLines) {
+        int counter = 0;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                counter++;
+            }
+            reader.close();
+            reader = new BufferedReader(new FileReader(inputFileName));
+            for (int i = 0; i < Math.ceil((double) counter / countLines); i++) {
+                File file = new File("Aboba.txt");
+                FileWriter writer = new FileWriter(file);
+                for (int j = 0; j < countLines; j++) {
+                    line = reader.readLine();
+                    writer.write(line);
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void createFileFromSymbol(int countSymbols) {
+        int counter = 1;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
+            char symbol;
+            while ((symbol = (char) reader.read()) != (char) -1) {
+                System.out.println(symbol);
+                counter++;
+            }
+            reader.close();
+            reader = new BufferedReader(new FileReader(inputFileName));
+            for (int i = 0; i < Math.ceil((double) counter / countSymbols); i++) {
+                File file = new File("Aboba.txt");
+                FileWriter writer = new FileWriter(file);
+                for (int j = 0; j < countSymbols; j++) {
+                    symbol = (char) reader.read();
+                    writer.write(symbol);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
 }
