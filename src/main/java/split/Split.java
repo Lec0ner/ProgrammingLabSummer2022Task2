@@ -21,6 +21,7 @@ public class Split {
     private int countSymbols;
     private int countFiles;
     private String inputFileName;
+    private int count = 1;
 
     public Split(String outputNameFile, boolean fileNumbering, int countLines
             , int countSymbols, int countFiles, String inputFileName) {
@@ -30,8 +31,8 @@ public class Split {
         this.countFiles = countFiles;
         this.inputFileName = inputFileName;
         correctFileName(outputNameFile);
-        createFileFromLine(20);
-        createFileFromSymbol(2000);
+        createFileFromLine(1);
+        //createFileFromSymbol();
     }
 
     //Задает базовое имя выходного файла, базовое имя X,если параметри "-" выходной файл = входному
@@ -45,14 +46,20 @@ public class Split {
     }
 
 
-    public String orderFileName(String outputNameFile) {
-        if (fileNumbering) {
+    // Порядок названия файла
 
+    public String orderFileName() {
+        String output = "";
+        if (fileNumbering) {
+            output = outputNameFile + count + ".txt";
+            count++;
         } else {
 
         }
-        return "";
+        return output;
     }
+
+    // Размер файла в строках
 
     public void createFileFromLine(int countLines) {
         int counter = 0;
@@ -60,13 +67,12 @@ public class Split {
             BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
             String line = "";
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
                 counter++;
             }
             reader.close();
             reader = new BufferedReader(new FileReader(inputFileName));
             for (int i = 0; i < Math.ceil((double) counter / countLines); i++) {
-                File file = new File("Aboba.txt");
+                File file = new File(orderFileName());
                 FileWriter writer = new FileWriter(file);
                 for (int j = 0; j < countLines; j++) {
                     line = reader.readLine();
@@ -80,19 +86,20 @@ public class Split {
         }
     }
 
+    // Размер файла в символах
+
     public void createFileFromSymbol(int countSymbols) {
-        int counter = 1;
+        int counter = 0;
         try {
             BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
             char symbol;
             while ((symbol = (char) reader.read()) != (char) -1) {
-                System.out.println(symbol);
                 counter++;
             }
             reader.close();
             reader = new BufferedReader(new FileReader(inputFileName));
             for (int i = 0; i < Math.ceil((double) counter / countSymbols); i++) {
-                File file = new File("Aboba1.txt");
+                File file = new File(orderFileName());
                 FileWriter writer = new FileWriter(file);
                 for (int j = 0; j < countSymbols; j++) {
                     symbol = (char) reader.read();
@@ -103,8 +110,6 @@ public class Split {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
 }

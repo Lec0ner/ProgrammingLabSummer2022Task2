@@ -13,7 +13,7 @@ public class SplitLauncher {
     private String outputNameFile = "x";
 
     @Option(name = "-d", usage = "Change file numbering")
-    private boolean fileNumbering = false;
+    private boolean fileNumbering = true;
 
     @Option(name = "-l", metaVar = "num", usage = "Output file size in line", forbids = {"-c", "-n"})
     private int countLines = 100;
