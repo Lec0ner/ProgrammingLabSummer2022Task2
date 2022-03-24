@@ -46,5 +46,6 @@ public class SplitLauncher {
         }
 
         Split split = new Split(outputNameFile, fileNumbering, countLines, countSymbols, countFiles, inputFileName);
+        split.start();
     }
 }

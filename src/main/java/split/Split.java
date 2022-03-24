@@ -31,13 +31,16 @@ public class Split {
         this.countSymbols = countSymbols;
         this.countFiles = countFiles;
         this.inputFileName = inputFileName;
-        //correctFileName(outputNameFile);
-        //createFileFromLine(1);
+        correctFileName(outputNameFile);
+        //createFileFromLine(6);
         //createFileFromSymbol(500);
     }
 
 
-
+    public void start() {
+        if (countSymbols > 0) createFileFromSymbol(countSymbols);
+        else if (countLines > 0) createFileFromLine(countLines);
+    }
 
 
     //Задает базовое имя выходного файла, базовое имя X,если параметри "-" выходной файл = входному
@@ -50,15 +53,14 @@ public class Split {
         this.outputNameFile = outputNameFile;
     }
 
-
     // Порядок названия файла
 
     public String orderFileName() {
         StringBuilder output = new StringBuilder();
-        if (fileNumbering) output = new StringBuilder(count + 1);
+        if (fileNumbering) output.append(count + 1);
         else {
             int k = count;
-            for (int i = 0; i < Math.log(counterFiles) / Math.log(26); i++) {
+            for (int i = 0; i < (int) (Math.log(counterFiles) / Math.log(26) - 0.000001) + 1; i++) {
                 output.append((char) (97 + k % 26));
                 k /= 26;
             }
