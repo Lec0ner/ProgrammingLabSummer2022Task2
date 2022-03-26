@@ -1,14 +1,13 @@
 package split;
 
-/**
-● Задает базовое имя выходного файла, базовое имя X,если параметри "-" выходной файл = входному V
-● Порядок названия если флаг есть,то “ofile1, ofile2, ofile3,ofile4 …”, если нет, то “ofileaa, ofileab,
- ofileac, ofilead … ofileaz, ofileba ofilebb … ”   X
-● Размер файла в строчках  V
-● Размер файла в символах  V
-● кол-во выходных файлов  X
-● Регулярка ([^\\]+)\.txt
- **/
+/* Задает базовое имя выходного файла, базовое имя X,если параметри "-" выходной файл = входному V
+* ● Порядок названия если флаг есть,то “ofile1, ofile2, ofile3,ofile4 …”, если нет, то “ofileaa, ofileab,
+* ofileac, ofilead … ofileaz, ofileba ofilebb … ”   X
+* Размер файла в строчках  V
+* Размер файла в символах  V
+* кол-во выходных файлов  X
+* Регулярка ([^\\]+)\.txt
+* */
 
 import java.io.*;
 import java.nio.file.Path;
@@ -56,7 +55,7 @@ public class Split {
 
     private void correctFileName(String outputNameFile) {
         if (outputNameFile.equals("-")) {
-            // Определение стандартного имени файла и его присваевание без расширения
+            // Определение стандартного имени файла и его присваивание без расширения
             String fileName = String.valueOf(Path.of(inputFileName).getFileName());
             outputNameFile = fileName.substring(0, fileName.lastIndexOf("."));
         }
@@ -66,7 +65,7 @@ public class Split {
 
     /** Порядок названия файла **/
 
-    public String orderFileName() {
+    private String orderFileName() {
         // Создание строки
         StringBuilder output = new StringBuilder();
         if (fileNumbering) output.append(count + 1);
@@ -86,7 +85,7 @@ public class Split {
 
     /** Чтение файла построчно **/
 
-    public void readFileLine(){
+    private void readFileLine(){
         // Создание счетчика
         int counter = 0;
         try {
@@ -106,13 +105,13 @@ public class Split {
 
     /** Размер файла в строках **/
 
-    public void createFileFromLine() {
+    private void createFileFromLine() {
         String line;
         try {
             BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
             // Создание нужного количества файлов
             for (int i = 0; i < counterFiles; i++) {
-                File file = new File(orderFileName());
+                File file = new File("OutputFile/" + orderFileName());
                 FileWriter writer = new FileWriter(file);
                 // Заполнение файла n количеством строк
                 for (int j = 0; j < this.countLines; j++) {
@@ -130,7 +129,7 @@ public class Split {
 
     /** Чтение файла посимвольно **/
 
-    public int readFileSymbol(){
+    private int readFileSymbol(){
         // Создание счетчика
         int counter = 0;
         try {
@@ -151,13 +150,13 @@ public class Split {
 
     /** Размер файла в символах **/
 
-    public void createFileFromSymbol() {
+    private void createFileFromSymbol() {
         char symbol;
         try {
             BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
             for (int i = 0; i < counterFiles; i++) {
                 // Создание нужного количества файлов
-                File file = new File(orderFileName());
+                File file = new File("OutputFile/" + orderFileName());
                 FileWriter writer = new FileWriter(file);
                 // Заполнение файла n количеством символов
                 for (int j = 0; j < this.countSymbols; j++) {
@@ -174,7 +173,7 @@ public class Split {
 
     /** Количество файлов на выходе заданное пользователем **/
 
-    public void createFileFromFile(){
+    private void createFileFromFile(){
         int counterSymbols = readFileSymbol();
         counterFiles = countFiles;
         countSymbols = (int) Math.ceil((double) counterSymbols / counterFiles);
