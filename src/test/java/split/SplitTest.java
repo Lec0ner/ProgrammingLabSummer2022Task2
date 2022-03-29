@@ -71,10 +71,6 @@ class SplitTest {
                 checkCorrectWork("src/test/resources/expected/expected3")
         );
 
-        new Split("file", false, 100, 100, 0, "src/test/resources/input/input.txt").start();
-        assertTrue(
-                checkCorrectWork("src/test/resources/expected/expected4")
-        );
 
         new Split("file", false, 100, 0, 1, "src/test/resources/input/input.txt").start();
         assertTrue(
@@ -88,11 +84,6 @@ class SplitTest {
     }
     @Test
     public void splitLauncher() throws IOException {
-        SplitLauncher.main(("-d -l 2 src/test/resources/input/input.txt").split(" "));
-        assertTrue(
-                checkCorrectWork("src/test/resources/expected/expected")
-        );
-
         SplitLauncher.main(("-l 2 -o - src/test/resources/input/input.txt").split(" "));
         assertTrue(
                 checkCorrectWork("src/test/resources/expected/expected1")
