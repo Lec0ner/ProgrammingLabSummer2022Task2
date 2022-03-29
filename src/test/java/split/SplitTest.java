@@ -4,11 +4,17 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SplitTest {
+
+    private void createDirectory(){
+        new File("src/test/resources/output").mkdir();
+    }
+
 
     private boolean checkCorrectWork(String expectedPath) throws IOException {
         File[] outputFiles = new File("src/test/resources/output").listFiles();
@@ -34,6 +40,7 @@ class SplitTest {
 
     @Test
     public void split() throws IOException {
+        createDirectory();
         new Split("x", true, 2, 0, 0, "src/test/resources/input/input.txt").start();
         assertTrue(
                 checkCorrectWork("src/test/resources/expected/expected")
