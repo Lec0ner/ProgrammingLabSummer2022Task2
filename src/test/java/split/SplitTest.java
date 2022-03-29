@@ -2,15 +2,158 @@ package split;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SplitTest {
+
+    private boolean checkCorrectWork(String expectedPath) throws IOException {
+        File[] outputFiles = new File("src/test/resources/output").listFiles();
+        File[] expectedFiles = new File(expectedPath).listFiles();
+        if (Objects.requireNonNull(outputFiles).length != Objects.requireNonNull(expectedFiles).length) return false;
+        for (int i = 0; i <= Objects.requireNonNull(outputFiles).length - 1; i++) {
+            if (!checkFileContent(outputFiles[i], Objects.requireNonNull(expectedFiles)[i])) return false;
+            outputFiles[i].delete();
+        }
+        return true;
+    }
+
+    private boolean checkFileContent(File actual, File expected) throws IOException {
+        if (!actual.getName().equals(expected.getName())) return false;
+        List<String> expectedLines = Files.readAllLines(expected.toPath());
+        List<String> actualLines = Files.readAllLines(actual.toPath());
+        if (expectedLines.size() != actualLines.size()) return false;
+        for (int i = 0; i <= expectedLines.size() - 1; i++) {
+            if (!actualLines.get(i).equals(expectedLines.get(i))) return false;
+        }
+        return true;
+    }
+
     @Test
-    void start() {
+    public void split() throws IOException {
+        new Split("x", true, 2, 0, 0, "src/test/resources/input/input.txt").start();
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected")
+        );
 
+        new Split("-", false, 2, 0, 0, "src/test/resources/input/input.txt").start();
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected1")
+        );
 
+        new Split("file", false, 2, 0, 0, "src/test/resources/input/input.txt").start();
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected2")
+        );
 
+        new Split("file", false, 20, 0, 0, "src/test/resources/input/input.txt").start();
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected3")
+        );
 
+        new Split("file", false, 100, 0, 0, "src/test/resources/input/input.txt").start();
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected3")
+        );
+
+        new Split("file", false, 100, 10000, 0, "src/test/resources/input/input.txt").start();
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected3")
+        );
+
+        new Split("file", false, 100, 100, 0, "src/test/resources/input/input.txt").start();
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected4")
+        );
+
+        new Split("file", false, 100, 0, 1, "src/test/resources/input/input.txt").start();
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected3")
+        );
+
+        new Split("file", false, 100, 0, 10, "src/test/resources/input/input.txt").start();
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected5")
+        );
+    }
+    @Test
+    public void splitLauncher() throws IOException {
+        SplitLauncher.main(("-d -l 2 src/test/resources/input/input.txt").split(" "));
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected")
+        );
+
+        SplitLauncher.main(("-l 2 -o - src/test/resources/input/input.txt").split(" "));
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected1")
+        );
+
+        SplitLauncher.main(("-l 2 -o file src/test/resources/input/input.txt").split(" "));
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected2")
+        );
+
+        SplitLauncher.main(("-l 20 -o file src/test/resources/input/input.txt").split(" "));
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected3")
+        );
+
+        SplitLauncher.main(("-o file src/test/resources/input/input.txt").split(" "));
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected3")
+        );
+
+        SplitLauncher.main(("-c 10000 -o file src/test/resources/input/input.txt").split(" "));
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected3")
+        );
+
+        SplitLauncher.main(("-c 100 -o file src/test/resources/input/input.txt").split(" "));
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected4")
+        );
+
+        SplitLauncher.main(("-n 1 -o file src/test/resources/input/input.txt").split(" "));
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected3")
+        );
+
+        SplitLauncher.main(("-n 10 -o file src/test/resources/input/input.txt").split(" "));
+        assertTrue(
+                checkCorrectWork("src/test/resources/expected/expected5")
+        );
+
+        String newLine = System.getProperty("line.separator");
+        System.setIn(new BufferedInputStream(new FileInputStream("src/test/resources/input/input1.txt")));
+
+        String expected = "option \"-c\" cannot be used with the option(s) [-l, -n]" + newLine + "java -jar split.jar [-d] [-l num|-c num|-n num] [-o ofile] file"
+                + newLine + " file     : File for split" + newLine + " -c num   : Output file size in symbols (default: 0)"
+                + newLine + " -d       : Change file numbering (default: false)" + newLine + " -l num   : Output file size in line (default: 0)"
+                + newLine + " -n num   : Number of output files (default: 0)" + newLine + " -o ofile : Base output file name (default: x)"
+                + newLine;
+
+        assertEquals(expected,
+                main(("-l 0 -c 0 src/test/resources/input/input.txt").split(" ")));
+    }
+
+    private String main (String[] args) {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream oldOut = System.out;
+        PrintStream oldErr = System.err;
+        System.setOut(new PrintStream(baos));
+        System.setErr(new PrintStream(baos));
+
+        SplitLauncher.main(args);
+
+        System.out.flush();
+        System.err.flush();
+        System.setOut(oldOut);
+        System.setErr(oldErr);
+        return baos.toString();
     }
 }
 

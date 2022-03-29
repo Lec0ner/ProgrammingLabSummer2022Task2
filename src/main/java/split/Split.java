@@ -111,7 +111,7 @@ public class Split {
             BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
             // Создание нужного количества файлов
             for (int i = 0; i < counterFiles; i++) {
-                File file = new File("OutputFile/" + orderFileName());
+                File file = new File("src/test/resources/output/" + orderFileName());
                 FileWriter writer = new FileWriter(file);
                 // Заполнение файла n количеством строк
                 for (int j = 0; j < this.countLines; j++) {
@@ -156,7 +156,7 @@ public class Split {
             BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
             for (int i = 0; i < counterFiles; i++) {
                 // Создание нужного количества файлов
-                File file = new File("OutputFile/" + orderFileName());
+                File file = new File("src/test/resources/output/" + orderFileName());
                 FileWriter writer = new FileWriter(file);
                 // Заполнение файла n количеством символов
                 for (int j = 0; j < this.countSymbols; j++) {
