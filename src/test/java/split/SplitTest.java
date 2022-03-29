@@ -13,7 +13,6 @@ class SplitTest {
 
     private void createDirectory(){
         new File("src/test/resources/output").mkdir();
-
     }
 
 
