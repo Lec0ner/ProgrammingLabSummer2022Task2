@@ -126,34 +126,6 @@ class SplitTest {
                 checkCorrectWork("src/test/resources/expected/expected5")
         );
 
-        String newLine = System.getProperty("line.separator");
-        System.setIn(new BufferedInputStream(new FileInputStream("src/test/resources/input/input1.txt")));
-
-        String expected = "option \"-c\" cannot be used with the option(s) [-l, -n]" + newLine + "java -jar split.jar [-d] [-l num|-c num|-n num] [-o ofile] file"
-                + newLine + " file     : File for split" + newLine + " -c num   : Output file size in symbols (default: 0)"
-                + newLine + " -d       : Change file numbering (default: false)" + newLine + " -l num   : Output file size in line (default: 0)"
-                + newLine + " -n num   : Number of output files (default: 0)" + newLine + " -o ofile : Base output file name (default: x)"
-                + newLine;
-
-        assertEquals(expected,
-                main(("-l 0 -c 0 src/test/resources/input/input.txt").split(" ")));
-    }
-
-    private String main (String[] args) {
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream oldOut = System.out;
-        PrintStream oldErr = System.err;
-        System.setOut(new PrintStream(baos));
-        System.setErr(new PrintStream(baos));
-
-        SplitLauncher.main(args);
-
-        System.out.flush();
-        System.err.flush();
-        System.setOut(oldOut);
-        System.setErr(oldErr);
-        return baos.toString();
     }
 }
 

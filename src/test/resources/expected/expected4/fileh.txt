@@ -1,1 +1,2 @@
-го сезона каждая из команд проводит 82 матча, по результатам которых отбираются участники плей-офф. 
+cording to the results of which the participants of the playoffs are selected. In
+the playoffs, tea
