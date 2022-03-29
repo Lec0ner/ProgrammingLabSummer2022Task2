@@ -11,13 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SplitTest {
 
-    private void createDirectory(){
-        new File("src/test/resources/output").mkdir();
-    }
-
-
     private boolean checkCorrectWork(String expectedPath) throws IOException {
-        File[] outputFiles = new File("src/test/resources/output").listFiles();
+        File[] outputFiles = new File("output").listFiles();
         File[] expectedFiles = new File(expectedPath).listFiles();
         if (Objects.requireNonNull(outputFiles).length != Objects.requireNonNull(expectedFiles).length) return false;
         for (int i = 0; i <= Objects.requireNonNull(outputFiles).length - 1; i++) {
@@ -40,7 +35,6 @@ class SplitTest {
 
     @Test
     public void split() throws IOException {
-        createDirectory();
         new Split("x", true, 2, 0, 0, "src/test/resources/input/input.txt").start();
         assertTrue(
                 checkCorrectWork("src/test/resources/expected/expected")
