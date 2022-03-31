@@ -1,13 +1,13 @@
 package split;
 
 /* Задает базовое имя выходного файла, базовое имя X,если параметри "-" выходной файл = входному V
-* ● Порядок названия если флаг есть,то “ofile1, ofile2, ofile3,ofile4 …”, если нет, то “ofileaa, ofileab,
-* ofileac, ofilead … ofileaz, ofileba ofilebb … ”   X
-* Размер файла в строчках  V
-* Размер файла в символах  V
-* кол-во выходных файлов  X
-* Регулярка ([^\\]+)\.txt
-* */
+ * ● Порядок названия если флаг есть,то “ofile1, ofile2, ofile3,ofile4 …”, если нет, то “ofileaa, ofileab,
+ * ofileac, ofilead … ofileaz, ofileba ofilebb … ”   X
+ * Размер файла в строчках  V
+ * Размер файла в символах  V
+ * кол-во выходных файлов  X
+ * Регулярка ([^\\]+)\.txt
+ * */
 
 import java.io.*;
 import java.nio.file.Path;
@@ -34,12 +34,15 @@ public class Split {
     }
 
 
-    /** Стартовая функция **/
+    /**
+     * Стартовая функция
+     **/
 
     public void start() {
         new File("output").mkdir();
-        if (countFiles > 0 )createFileFromFile();
-        else if (countSymbols > 0){
+        if (countFiles > 0) {
+            createFileFromFile();
+        } else if (countSymbols > 0) {
             readFileSymbol();
             createFileFromSymbol();
         } else if (countLines > 0) {
@@ -50,8 +53,8 @@ public class Split {
 
 
     /**
-     ● Возвращает базовое имя outputFileName если в параметр было передано имя,
-     ● если параметр "-" то выходной = входному
+     * ● Возвращает базовое имя outputFileName если в параметр было передано имя,
+     * ● если параметр "-" то выходной = входному
      **/
 
     private void correctFileName(String outputNameFile) {
@@ -64,7 +67,9 @@ public class Split {
     }
 
 
-    /** Порядок названия файла **/
+    /**
+     * Порядок названия файла
+     **/
 
     private String orderFileName() {
         // Создание строки
@@ -84,9 +89,11 @@ public class Split {
         return outputNameFile + output + ".txt";
     }
 
-    /** Чтение файла построчно **/
+    /**
+     * Чтение файла построчно
+     **/
 
-    private void readFileLine(){
+    private void readFileLine() {
         // Создание счетчика
         int counter = 0;
         try {
@@ -98,13 +105,15 @@ public class Split {
             // Подсчет нужного количества файлов
             counterFiles = (int) Math.ceil((double) counter / this.countLines);
             reader.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 
-    /** Размер файла в строках **/
+    /**
+     * Размер файла в строках
+     **/
 
     private void createFileFromLine() {
         String line;
@@ -128,9 +137,11 @@ public class Split {
         }
     }
 
-    /** Чтение файла посимвольно **/
+    /**
+     * Чтение файла посимвольно
+     **/
 
-    private int readFileSymbol(){
+    private int readFileSymbol() {
         // Создание счетчика
         int counter = 0;
         try {
@@ -142,14 +153,16 @@ public class Split {
             // Подсчет нужного количества файлов
             counterFiles = (int) Math.ceil((double) counter / countSymbols);
             reader.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
-       }
+        }
         return counter;
     }
 
 
-    /** Размер файла в символах **/
+    /**
+     * Размер файла в символах
+     **/
 
     private void createFileFromSymbol() {
         char symbol;
@@ -172,9 +185,11 @@ public class Split {
         }
     }
 
-    /** Количество файлов на выходе заданное пользователем **/
+    /**
+     * Количество файлов на выходе заданное пользователем
+     **/
 
-    private void createFileFromFile(){
+    private void createFileFromFile() {
         int counterSymbols = readFileSymbol();
         counterFiles = countFiles;
         countSymbols = (int) Math.ceil((double) counterSymbols / counterFiles);
