@@ -118,6 +118,7 @@ public class Split {
             reader.close();
         } catch (FileNotFoundException e) {
             System.err.println(inputFileName + " not found: " + e.getMessage());
+            return;
         } catch (IOException e) {
             System.err.println(inputFileName + " was not created " + e.getMessage());
             System.err.println("Cutting is broken");
@@ -158,6 +159,7 @@ public class Split {
             reader.close();
         } catch (FileNotFoundException e) {
             System.err.println(inputFileName + " not found: " + e.getMessage());
+            return;
         } catch (IOException e) {
             System.err.println(inputFileName + " was not created " + e.getMessage());
             System.err.println("Cutting is broken");
@@ -193,6 +195,7 @@ public class Split {
             readAndCreateFileFromSymbol();
         } catch (FileNotFoundException e) {
             System.err.println(inputFileName + " not found: " + e.getMessage());
+            return;
         } catch (IOException e) {
             System.err.println(inputFileName + " was not created " + e.getMessage());
             System.err.println("Cutting is broken");
