@@ -6,7 +6,6 @@ package split;
  * Размер файла в строчках  V
  * Размер файла в символах  V
  * кол-во выходных файлов  X
- * Регулярка ([^\\]+)\.txt
  * */
 
 import java.io.*;
@@ -20,8 +19,6 @@ public class Split {
     private int countSymbols;
     private final int countFiles;
     private final String inputFileName;
-    private int count = 0;
-    private int counterFiles;
 
     public Split(String outputNameFile, boolean fileNumbering, int countLines
             , int countSymbols, int countFiles, String inputFileName) {
@@ -43,11 +40,9 @@ public class Split {
         if (countFiles > 0) {
             createFileFromFile();
         } else if (countSymbols > 0) {
-            readFileSymbol();
-            createFileFromSymbol();
+            readAndCreateFileFromSymbol();
         } else if (countLines > 0) {
-            readFileLine();
-            createFileFromLine();
+            readAndCreateFileFromLine();
         }
     }
 
@@ -60,7 +55,7 @@ public class Split {
     private void correctFileName(String outputNameFile) {
         if (outputNameFile.equals("-")) {
             // Определение стандартного имени файла и его присваивание без расширения
-            String fileName = String.valueOf(Path.of(inputFileName).getFileName());
+            String fileName = Path.of(inputFileName).getFileName().toString();
             outputNameFile = fileName.substring(0, fileName.lastIndexOf("."));
         }
         this.outputNameFile = outputNameFile;
@@ -71,63 +66,44 @@ public class Split {
      * Порядок названия файла
      **/
 
-    private String orderFileName() {
+    private String orderFileName(int counter) {
         // Создание строки
         StringBuilder output = new StringBuilder();
-        if (fileNumbering) output.append(count + 1);
+        if (fileNumbering) output.append(counter);
         else {
-            int k = count;
+            int k = counter - 1;
             // Определение разряда и добавление в строку нужных символов
-            for (int i = 0; i < (int) (Math.log(counterFiles) / Math.log(26) - 0.000001) + 1; i++) {
+            for (int i = 0; i < (int) (Math.log(counter) / Math.log(26) - 0.00001) + 1; i++) {
                 output.append((char) (97 + k % 26));
                 k /= 26;
             }
             output.reverse();
         }
-        count++;
         // Возвращение стандартного имени с символами и расширением
         return outputNameFile + output + ".txt";
     }
 
-    /**
-     * Чтение файла построчно
-     **/
-
-    private void readFileLine() {
-        // Создание счетчика
-        int counter = 0;
-        try {
-            // Чтение файла и подсчет линий в файле
-            BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
-            while (reader.readLine() != null) {
-                counter++;
-            }
-            // Подсчет нужного количества файлов
-            counterFiles = (int) Math.ceil((double) counter / this.countLines);
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     /**
-     * Размер файла в строках
+     * Чтение и создание файла с его заполнением построчно
      **/
 
-    private void createFileFromLine() {
-        String line;
+
+    private void readAndCreateFileFromLine() {
         try {
+            // Чтение файла
             BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
-            // Создание нужного количества файлов
-            for (int i = 0; i < counterFiles; i++) {
-                File file = new File("output/" + orderFileName());
+            String line = reader.readLine();
+            int counter = 1;
+            while (line != null) {
+                File file = new File("output/" + orderFileName(counter));
                 FileWriter writer = new FileWriter(file);
+                counter++;
                 // Заполнение файла n количеством строк
                 for (int j = 0; j < this.countLines; j++) {
-                    line = reader.readLine();
                     if (line == null) break;
                     writer.write(line + "\n");
+                    line = reader.readLine();
                 }
                 writer.close();
             }
@@ -138,61 +114,51 @@ public class Split {
     }
 
     /**
-     * Чтение файла посимвольно
+     * Чтение и создание файла с его заполнением посимвольно
      **/
 
-    private int readFileSymbol() {
-        // Создание счетчика
-        int counter = 0;
+    private void readAndCreateFileFromSymbol() {
         try {
-            // Чтение файла и подсчет символов в файле
+            // Чтение файла
             BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
-            while ((char) reader.read() != (char) -1) {
-                counter++;
-            }
-            // Подсчет нужного количества файлов
-            counterFiles = (int) Math.ceil((double) counter / countSymbols);
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return counter;
-    }
-
-
-    /**
-     * Размер файла в символах
-     **/
-
-    private void createFileFromSymbol() {
-        char symbol;
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
-            for (int i = 0; i < counterFiles; i++) {
-                // Создание нужного количества файлов
-                File file = new File("output/" + orderFileName());
+            char symbol = (char) reader.read();
+            int counter = 1;
+            while (symbol != (char) -1) {
+                File file = new File("output/" + orderFileName(counter));
                 FileWriter writer = new FileWriter(file);
-                // Заполнение файла n количеством символов
+                counter++;
+                // Заполнение файла n количеством строк
                 for (int j = 0; j < this.countSymbols; j++) {
-                    symbol = (char) reader.read();
                     if (symbol == (char) -1) break;
                     writer.write(symbol);
+                    symbol = (char) reader.read();
                 }
                 writer.close();
             }
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Количество файлов на выходе заданное пользователем
      **/
 
     private void createFileFromFile() {
-        int counterSymbols = readFileSymbol();
-        counterFiles = countFiles;
-        countSymbols = (int) Math.ceil((double) counterSymbols / counterFiles);
-        createFileFromSymbol();
+        try {
+            int counter = 0;
+            // Чтение файла и подсчет символов в файле
+            BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
+            while ((char) reader.read() != (char) -1) {
+                counter++;
+            }
+            reader.close();
+            countSymbols = (int) Math.ceil((double) counter / countFiles);
+            readAndCreateFileFromSymbol();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
