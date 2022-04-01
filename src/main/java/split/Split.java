@@ -90,10 +90,18 @@ public class Split {
 
 
     private void readAndCreateFileFromLine() {
+        BufferedReader reader;
         try {
             // Чтение файла
-            BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
-            String line = reader.readLine();
+            reader = new BufferedReader(new FileReader(inputFileName));
+        } catch (IOException e) {
+            System.err.println(inputFileName + " was not created " + e.getMessage());
+            System.err.println("Cutting is broken");
+            return;
+        }
+        try {
+            String line;
+            line = reader.readLine();
             int counter = 1;
             while (line != null) {
                 File file = new File("output/" + orderFileName(counter));
@@ -108,9 +116,14 @@ public class Split {
                 writer.close();
             }
             reader.close();
+        } catch (FileNotFoundException e) {
+            System.err.println(inputFileName + " not found: " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(inputFileName + " was not created " + e.getMessage());
+            System.err.println("Cutting is broken");
+            return;
         }
+        System.out.println("Line-by-line cutting " + inputFileName + " ended");
     }
 
     /**
@@ -118,9 +131,16 @@ public class Split {
      **/
 
     private void readAndCreateFileFromSymbol() {
+        BufferedReader reader;
         try {
             // Чтение файла
-            BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
+            reader = new BufferedReader(new FileReader(inputFileName));
+        } catch (IOException e) {
+            System.err.println(inputFileName + " was not created " + e.getMessage());
+            System.err.println("Cutting is broken");
+            return;
+        }
+        try {
             char symbol = (char) reader.read();
             int counter = 1;
             while (symbol != (char) -1) {
@@ -136,9 +156,14 @@ public class Split {
                 writer.close();
             }
             reader.close();
+        } catch (FileNotFoundException e) {
+            System.err.println(inputFileName + " not found: " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(inputFileName + " was not created " + e.getMessage());
+            System.err.println("Cutting is broken");
+            return;
         }
+        System.out.println("Character-by-character cutting " + inputFileName + " ended");
     }
 
 
@@ -147,18 +172,32 @@ public class Split {
      **/
 
     private void createFileFromFile() {
+        BufferedReader reader;
         try {
+            // Чтение файла
+            reader = new BufferedReader(new FileReader(inputFileName));
+        } catch (IOException e) {
+            System.err.println(inputFileName + " was not created " + e.getMessage());
+            System.err.println("Cutting is broken");
+            return;
+        }
+        try {
+            // Создание счетчика и подсчет им символов в файле
             int counter = 0;
-            // Чтение файла и подсчет символов в файле
-            BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
             while ((char) reader.read() != (char) -1) {
                 counter++;
             }
             reader.close();
+            // Кол-во символов в 1 файле
             countSymbols = (int) Math.ceil((double) counter / countFiles);
             readAndCreateFileFromSymbol();
+        } catch (FileNotFoundException e) {
+            System.err.println(inputFileName + " not found: " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(inputFileName + " was not created " + e.getMessage());
+            System.err.println("Cutting is broken");
+            return;
         }
+        System.out.println("Cutting by file " + inputFileName + " ended");
     }
 }
