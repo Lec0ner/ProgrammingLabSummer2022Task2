@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SplitTest {
 
+
+
     private boolean checkCorrectWork(String expectedPath) throws IOException {
         File[] outputFiles = new File("output").listFiles();
         File[] expectedFiles = new File(expectedPath).listFiles();
@@ -20,6 +22,7 @@ class SplitTest {
         }
         return true;
     }
+
 
     private boolean checkFileContent(File actual, File expected) throws IOException {
         if (!actual.getName().equals(expected.getName())) return false;

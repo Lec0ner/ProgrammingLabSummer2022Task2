@@ -1,11 +1,11 @@
 package split;
 
-/* Задает базовое имя выходного файла, базовое имя X,если параметри "-" выходной файл = входному V
+/* Задает базовое имя выходного файла, базовое имя X,если параметр "-" выходной файл = входному V
  * ● Порядок названия если флаг есть,то “ofile1, ofile2, ofile3,ofile4 …”, если нет, то “ofileaa, ofileab,
- * ofileac, ofilead … ofileaz, ofileba ofilebb … ”   X
+ * ofileac, ofilead … ofileaz, ofileba ofilebb … ”   V
  * Размер файла в строчках  V
  * Размер файла в символах  V
- * кол-во выходных файлов  X
+ * Кол-во выходных файлов  V
  * */
 
 import java.io.*;
@@ -90,16 +90,8 @@ public class Split {
 
 
     private void readAndCreateFileFromLine() {
-        BufferedReader reader;
-        try {
-            // Чтение файла
-            reader = new BufferedReader(new FileReader(inputFileName));
-        } catch (IOException e) {
-            System.err.println(inputFileName + " was not created " + e.getMessage());
-            System.err.println("Cutting is broken");
-            return;
-        }
-        try {
+        // Чтение файла
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             String line;
             line = reader.readLine();
             int counter = 1;
@@ -115,7 +107,6 @@ public class Split {
                 }
                 writer.close();
             }
-            reader.close();
         } catch (FileNotFoundException e) {
             System.err.println(inputFileName + " not found: " + e.getMessage());
             return;
@@ -132,18 +123,10 @@ public class Split {
      **/
 
     private void readAndCreateFileFromSymbol() {
-        BufferedReader reader;
-        try {
-            // Чтение файла
-            reader = new BufferedReader(new FileReader(inputFileName));
-        } catch (IOException e) {
-            System.err.println(inputFileName + " was not created " + e.getMessage());
-            System.err.println("Cutting is broken");
-            return;
-        }
-        try {
-            char symbol = (char) reader.read();
+        // Чтение файла
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             int counter = 1;
+            char symbol = (char) reader.read();
             while (symbol != (char) -1) {
                 File file = new File("output/" + orderFileName(counter));
                 FileWriter writer = new FileWriter(file);
@@ -156,7 +139,6 @@ public class Split {
                 }
                 writer.close();
             }
-            reader.close();
         } catch (FileNotFoundException e) {
             System.err.println(inputFileName + " not found: " + e.getMessage());
             return;
@@ -174,16 +156,8 @@ public class Split {
      **/
 
     private void createFileFromFile() {
-        BufferedReader reader;
-        try {
-            // Чтение файла
-            reader = new BufferedReader(new FileReader(inputFileName));
-        } catch (IOException e) {
-            System.err.println(inputFileName + " was not created " + e.getMessage());
-            System.err.println("Cutting is broken");
-            return;
-        }
-        try {
+        // Чтение файла
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             // Создание счетчика и подсчет им символов в файле
             int counter = 0;
             while ((char) reader.read() != (char) -1) {
