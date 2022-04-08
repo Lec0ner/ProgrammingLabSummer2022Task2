@@ -96,8 +96,7 @@ public class Split {
             line = reader.readLine();
             int counter = 1;
             while (line != null) {
-                File file = new File("output/" + orderFileName(counter));
-                FileWriter writer = new FileWriter(file);
+                FileWriter writer = new FileWriter("output/" + orderFileName(counter));
                 counter++;
                 // Заполнение файла n количеством строк
                 for (int j = 0; j < this.countLines; j++) {
@@ -128,8 +127,7 @@ public class Split {
             int counter = 1;
             char symbol = (char) reader.read();
             while (symbol != (char) -1) {
-                File file = new File("output/" + orderFileName(counter));
-                FileWriter writer = new FileWriter(file);
+                FileWriter writer = new FileWriter("output/" + orderFileName(counter));
                 counter++;
                 // Заполнение файла n количеством строк
                 for (int j = 0; j < this.countSymbols; j++) {
@@ -163,7 +161,6 @@ public class Split {
             while ((char) reader.read() != (char) -1) {
                 counter++;
             }
-            reader.close();
             // Кол-во символов в 1 файле
             countSymbols = (int) Math.ceil((double) counter / countFiles);
             readAndCreateFileFromSymbol();
