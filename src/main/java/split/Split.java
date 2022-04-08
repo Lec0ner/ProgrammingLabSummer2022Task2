@@ -37,13 +37,12 @@ public class Split {
 
     public void start() {
         new File("output").mkdir();
-        if (countFiles > 0) {
+        if (countFiles > 0)
             createFileFromFile();
-        } else if (countSymbols > 0) {
+        else if (countSymbols > 0)
             readAndCreateFileFromSymbol();
-        } else if (countLines > 0) {
+        else if (countLines > 0)
             readAndCreateFileFromLine();
-        }
     }
 
 
@@ -65,44 +64,35 @@ public class Split {
     /**
      * Порядок названия файла
      **/
-
     private String orderFileName(int counter) {
-        // Создание строки
         StringBuilder output = new StringBuilder();
         if (fileNumbering) output.append(counter);
         else {
             int k = counter - 1;
             // Определение разряда и добавление в строку нужных символов
-            for (int i = 0; i < (int) (Math.log(counter) / Math.log(26) - 0.00001) + 1; i++) {
+            for (int i = 0; i < (int) (Math.log(counter) / Math.log(27)) + 1; i++, k /= 26)
                 output.append((char) (97 + k % 26));
-                k /= 26;
-            }
             output.reverse();
         }
-        // Возвращение стандартного имени с символами и расширением
         return outputNameFile + output + ".txt";
     }
-
 
     /**
      * Чтение и создание файла с его заполнением построчно
      **/
-
-
     private void readAndCreateFileFromLine() {
-        // Чтение файла
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             String line;
             line = reader.readLine();
-            int counter = 1;
+            int countFilesNow = 0;
             while (line != null) {
-                FileWriter writer = new FileWriter("output/" + orderFileName(counter));
-                counter++;
+                FileWriter writer = new FileWriter("output/" + orderFileName(++countFilesNow));
                 // Заполнение файла n количеством строк
                 for (int j = 0; j < this.countLines; j++) {
-                    if (line == null) break;
                     writer.write(line + "\n");
                     line = reader.readLine();
+                    if (line == null) break;
+
                 }
                 writer.close();
             }
@@ -120,20 +110,17 @@ public class Split {
     /**
      * Чтение и создание файла с его заполнением посимвольно
      **/
-
     private void readAndCreateFileFromSymbol() {
-        // Чтение файла
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
-            int counter = 1;
-            char symbol = (char) reader.read();
-            while (symbol != (char) -1) {
-                FileWriter writer = new FileWriter("output/" + orderFileName(counter));
-                counter++;
+            int countFilesNow = 0;
+            int symbol = reader.read();
+            while (symbol != -1) {
+                FileWriter writer = new FileWriter("output/" + orderFileName(++countFilesNow));
                 // Заполнение файла n количеством строк
                 for (int j = 0; j < this.countSymbols; j++) {
-                    if (symbol == (char) -1) break;
-                    writer.write(symbol);
-                    symbol = (char) reader.read();
+                    writer.write((char) symbol);
+                    symbol = reader.read();
+                    if (symbol == -1) break;
                 }
                 writer.close();
             }
@@ -148,30 +135,22 @@ public class Split {
         System.out.println("Character-by-character cutting " + inputFileName + " ended");
     }
 
-
     /**
      * Количество файлов на выходе заданное пользователем
      **/
-
     private void createFileFromFile() {
-        // Чтение файла
+        int counter = 0;
+        // Подсчет символов в файле
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
-            // Создание счетчика и подсчет им символов в файле
-            int counter = 0;
-            while ((char) reader.read() != (char) -1) {
-                counter++;
-            }
-            // Кол-во символов в 1 файле
-            countSymbols = (int) Math.ceil((double) counter / countFiles);
-            readAndCreateFileFromSymbol();
-        } catch (FileNotFoundException e) {
-            System.err.println(inputFileName + " not found: " + e.getMessage());
-            return;
+            while (reader.read() != -1) counter++;
         } catch (IOException e) {
             System.err.println(inputFileName + " was not created " + e.getMessage());
             System.err.println("Cutting is broken");
             return;
         }
+        // Кол-во символов в 1 файле
+        countSymbols = (int) Math.ceil((double) counter / countFiles);
+        readAndCreateFileFromSymbol();
         System.out.println("Cutting by file " + inputFileName + " ended");
     }
 }
