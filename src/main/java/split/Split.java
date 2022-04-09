@@ -29,11 +29,11 @@ public class Split {
     public void start() {
         new File("output").mkdir();
         if (countFiles > 0)
-            creatureFileByFile();
+            createFileFromFile();
         else if (countSymbols > 0)
-            creatureFileBySymbol();
+            findingErrors();
         else if (countLines > 0)
-            creatureFileByLine();
+            findingErrors();
     }
 
 
@@ -70,13 +70,12 @@ public class Split {
     /**
      * Чтение и создание файла, заполнение его построчно
      **/
-    private void creatureFileByLine() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
-            String line;
-            line = reader.readLine();
-            int countFilesNow = 0;
-            while (line != null) {
-                FileWriter writer = new FileWriter("output/" + orderFileName(++countFilesNow));
+    private void createFileFromLine(BufferedReader reader) throws IOException {
+        String line;
+        line = reader.readLine();
+        int countFilesNow = 0;
+        while (line != null) {
+            try (FileWriter writer = new FileWriter("output/" + orderFileName(++countFilesNow))) {
                 // Заполнение файла n количеством строк
                 for (int j = 0; j < this.countLines; j++) {
                     writer.write(line + "\n");
@@ -84,15 +83,7 @@ public class Split {
                     if (line == null) break;
 
                 }
-                writer.close();
             }
-        } catch (FileNotFoundException e) {
-            System.err.println(inputFileName + " not found: " + e.getMessage());
-            return;
-        } catch (IOException e) {
-            System.err.println(inputFileName + " was not created " + e.getMessage());
-            System.err.println("Cutting is broken");
-            return;
         }
         System.out.println("Line-by-line cutting " + inputFileName + " ended");
     }
@@ -100,35 +91,27 @@ public class Split {
     /**
      * Чтение и создание файла, заполнение его посимвольно
      **/
-    private void creatureFileBySymbol() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
-            int countFilesNow = 0;
-            int symbol = reader.read();
-            while (symbol != -1) {
-                FileWriter writer = new FileWriter("output/" + orderFileName(++countFilesNow));
+    private void createFileFromSymbol(BufferedReader reader) throws IOException {
+        int countFilesNow = 0;
+        int symbol = reader.read();
+        while (symbol != -1) {
+            try (FileWriter writer = new FileWriter("output/" + orderFileName(++countFilesNow))) {
                 // Заполнение файла n количеством строк
                 for (int j = 0; j < this.countSymbols; j++) {
                     writer.write((char) symbol);
                     symbol = reader.read();
                     if (symbol == -1) break;
                 }
-                writer.close();
             }
-        } catch (FileNotFoundException e) {
-            System.err.println(inputFileName + " not found: " + e.getMessage());
-            return;
-        } catch (IOException e) {
-            System.err.println(inputFileName + " was not created " + e.getMessage());
-            System.err.println("Cutting is broken");
-            return;
         }
         System.out.println("Character-by-character cutting " + inputFileName + " ended");
     }
 
+
     /**
      * Количество файлов на выходе, заданное пользователем
      **/
-    private void creatureFileByFile() {
+    private void createFileFromFile() {
         int counter = 0;
         // Подсчет символов в файле
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
@@ -140,7 +123,24 @@ public class Split {
         }
         // Кол-во символов в 1 файле
         countSymbols = (int) Math.ceil((double) counter / countFiles);
-        creatureFileBySymbol();
+        findingErrors();
         System.out.println("Cutting by file " + inputFileName + " ended");
     }
+
+
+    private void findingErrors() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
+            if (countSymbols > 0) {
+                createFileFromSymbol(reader);
+            } else if (countLines > 0) {
+                createFileFromLine(reader);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println(inputFileName + " not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println(inputFileName + " was not created " + e.getMessage());
+            System.err.println("Cutting is broken");
+        }
+    }
 }
+
