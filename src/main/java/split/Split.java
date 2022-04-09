@@ -1,13 +1,5 @@
 package split;
 
-/* Задает базовое имя выходного файла, базовое имя X,если параметр "-" выходной файл = входному V
- * ● Порядок названия если флаг есть,то “ofile1, ofile2, ofile3,ofile4 …”, если нет, то “ofileaa, ofileab,
- * ofileac, ofilead … ofileaz, ofileba ofilebb … ”   V
- * Размер файла в строчках  V
- * Размер файла в символах  V
- * Кол-во выходных файлов  V
- * */
-
 import java.io.*;
 import java.nio.file.Path;
 
@@ -20,8 +12,8 @@ public class Split {
     private final int countFiles;
     private final String inputFileName;
 
-    public Split(String outputNameFile, boolean fileNumbering, int countLines
-            , int countSymbols, int countFiles, String inputFileName) {
+    public Split(String outputNameFile, boolean fileNumbering, int countLines,
+                 int countSymbols, int countFiles, String inputFileName) {
         this.fileNumbering = fileNumbering;
         this.countLines = countLines;
         this.countSymbols = countSymbols;
@@ -34,15 +26,14 @@ public class Split {
     /**
      * Стартовая функция
      **/
-
     public void start() {
         new File("output").mkdir();
         if (countFiles > 0)
-            createFileFromFile();
+            creatureFileByFile();
         else if (countSymbols > 0)
-            readAndCreateFileFromSymbol();
+            creatureFileBySymbol();
         else if (countLines > 0)
-            readAndCreateFileFromLine();
+            creatureFileByLine();
     }
 
 
@@ -50,7 +41,6 @@ public class Split {
      * ● Возвращает базовое имя outputFileName если в параметр было передано имя,
      * ● если параметр "-" то выходной = входному
      **/
-
     private void correctFileName(String outputNameFile) {
         if (outputNameFile.equals("-")) {
             // Определение стандартного имени файла и его присваивание без расширения
@@ -78,9 +68,9 @@ public class Split {
     }
 
     /**
-     * Чтение и создание файла с его заполнением построчно
+     * Чтение и создание файла, заполнение его построчно
      **/
-    private void readAndCreateFileFromLine() {
+    private void creatureFileByLine() {
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             String line;
             line = reader.readLine();
@@ -108,9 +98,9 @@ public class Split {
     }
 
     /**
-     * Чтение и создание файла с его заполнением посимвольно
+     * Чтение и создание файла, заполнение его посимвольно
      **/
-    private void readAndCreateFileFromSymbol() {
+    private void creatureFileBySymbol() {
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             int countFilesNow = 0;
             int symbol = reader.read();
@@ -136,9 +126,9 @@ public class Split {
     }
 
     /**
-     * Количество файлов на выходе заданное пользователем
+     * Количество файлов на выходе, заданное пользователем
      **/
-    private void createFileFromFile() {
+    private void creatureFileByFile() {
         int counter = 0;
         // Подсчет символов в файле
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
@@ -150,7 +140,7 @@ public class Split {
         }
         // Кол-во символов в 1 файле
         countSymbols = (int) Math.ceil((double) counter / countFiles);
-        readAndCreateFileFromSymbol();
+        creatureFileBySymbol();
         System.out.println("Cutting by file " + inputFileName + " ended");
     }
 }
